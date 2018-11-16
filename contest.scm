@@ -9,20 +9,41 @@
 ;;;    Use these three lines to describe
 ;;;    its inner meaning.>
 
+;; Rename builtins so we can override them 
 (define setcolor color)
+(define single-map map)
+(define single-apply apply)
 
 ;; General Util
-(define (fold fn id list)
+;; Flatten a list by one level
+;; (flat-once (1 2 ((3 4))) -> (1 2 (3 4))
+(define (flat-once lst)
+  (single-apply append
+         (single-map (lambda (e) (if (list? e) e (list e)))
+              lst)))
+
+;; Redefine apply to take multiple parameters and a list
+;; (apply + 5 '(1 1 1)) -> (+ 5 1 1 1)
+(define (apply fn . args)
+  (single-apply fn (flat-once args)))
+
+;; Redefine map to map across multiple lists
+;; (apply + '(1 2 3) '(1 2 3)) -> ((+ 1 1) (+ 2 2) (+ 3 3))
+(define (map fn . lst)
+  (if (null? (car lst))
+      '()
+      (cons (apply fn (single-map car lst))
+            (apply map fn (single-map cdr lst)))))
+
+(define (foldl fn id list)
   (if (null? list)
       id
-      (fold fn (fn id (car list)) (cdr list))))
-(define (zip a b)
-  (if (or (null? a) (null? b))
-      '()
-      (cons
-        (list (car a) (car b))
-        (zip (cdr a) (cdr b)))))
-    
+      (foldl fn (fn id (car list)) (cdr list))))
+
+;; Zip lists
+;; (zip '(1 2) '(a b) '(y z)) -> ((1 a y) (2 b z))
+(define (zip . lsts)
+  (apply map list lsts))
       
 
 ;; Math Util
@@ -30,10 +51,7 @@
   (* n n))
 
 
-
 ;; Vector Util
-(define (vector . args)
-  (apply list args))
 (define (vec . args)
   (apply list args))
 ;; Getters
@@ -43,19 +61,21 @@
   (car (cdr vec)))
 (define (z vec)
   (car (cdr (cdr vec))))
+(define (w vec)
+  (car (cdr (cdr (cdr vec)))))
 (define (i vec)
   (x vec))
 (define (j vec)
   (y vec))
 (define (k vec)
   (z vec))
+(define (l vec)
+  (w vec))
 ;; Util
-(define (vec-reduce fn a b)
-  (map
-    (lambda (pair) (apply fn pair))
-    (zip a b)))
 (define (vec-mag vec)
   (sqrt (apply + (map square vec))))
+(define (vec-map fn vecs)
+  (apply map fn vecs))
   
 ;; Scalar Operations
 (define (vs+ vec k)
@@ -67,14 +87,14 @@
 (define (vs/ vec k)
   (map (lambda (n) (/ n k)) vec))
 ;; Vector-Vector Operations
-(define (v+ a b)
-  (vec-reduce + a b))
-(define (v- a b)
-  (vec-reduce - a b))
-(define (v* a b)
-  (vec-reduce * a b))
-(define (v/ a b)
-  (vec-reduce / a b))
+(define (v+ . vecs)
+  (vec-map + vecs))
+(define (v- . vecs)
+  (apply map - vecs))
+(define (v* . vecs)
+  (apply map * vecs))
+(define (v/ . vecs)
+  (vec-map - vecs))
 (define (v. a b)
   (apply + (v* a b)))
 (define (vx a b)
@@ -261,7 +281,7 @@
 (define (draw)
   ;;(speed 0)
   ;;(hideturtle)
-  (super_sample 2 0 0)
+  ;;(super_sample 2 0 0)
 
   
   (exitonclick))
