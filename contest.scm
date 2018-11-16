@@ -14,18 +14,18 @@
 (define single-map map)
 (define single-apply apply)
 
+;;
 ;; General Util
-;; Flatten a list by one level
-;; (flat-once (1 2 ((3 4))) -> (1 2 (3 4))
-(define (flat-once lst)
-  (single-apply append
-         (single-map (lambda (e) (if (list? e) e (list e)))
-              lst)))
+;;
 
 ;; Redefine apply to take multiple parameters and a list
 ;; (apply + 5 '(1 1 1)) -> (+ 5 1 1 1)
 (define (apply fn . args)
-  (single-apply fn (flat-once args)))
+  (single-apply
+    fn
+    (single-apply
+      append
+      (single-map (lambda (e) (if (list? e) e (list e))) args))))
 
 ;; Redefine map to map across multiple lists
 ;; (apply + '(1 2 3) '(1 2 3)) -> ((+ 1 1) (+ 2 2) (+ 3 3))
@@ -72,33 +72,24 @@
 (define (l vec)
   (w vec))
 ;; Util
-(define (vec-mag vec)
-  (sqrt (apply + (map square vec))))
-(define (vec-map fn vecs)
+
+;; Map the function fn over the vectors
+(define (vmap fn . vecs)
   (apply map fn vecs))
+
+;; Map a function with a scalar over the vector
+(define (vsmap fn k vec)
+  (map (lambda (n) (fn n k)) vec))
+
+(define (vec-map-scalar fn vec k)
+  (map (lambda (n) (fn n k)) vec))
   
-;; Scalar Operations
-(define (vs+ vec k)
-  (map (lambda (n) (+ n k)) vec))
-(define (vs- vec k)
-  (map (lambda (n) (- n k)) vec))
-(define (vs* vec k)
-  (map (lambda (n) (* n k)) vec))
-(define (vs/ vec k)
-  (map (lambda (n) (/ n k)) vec))
-;; Vector-Vector Operations
-(define (v+ . vecs)
-  (vec-map + vecs))
-(define (v- . vecs)
-  (apply map - vecs))
-(define (v* . vecs)
-  (apply map * vecs))
-(define (v/ . vecs)
-  (vec-map - vecs))
-(define (v. a b)
-  (apply + (v* a b)))
-(define (vx a b)
-  (list
+(define (vmag vec)
+  (sqrt (apply + (map square vec))))
+(define (vdot a b)
+  (apply + (vmap * a b)))
+(define (vcross a b)
+  (vec
     (-
       (* (y a) (z b))
       (* (z a) (y b)))
@@ -108,8 +99,6 @@
     (-
       (* (x a) (y b))
       (* (y a) (x b)))))
-
-
 
 ;; Color Util
 (define (color r g b)
@@ -129,17 +118,13 @@
 (define (col->str col)
   (rgb (r col) (g col) (b col)))
 (define (col-norm col)
-  (vs/ col 255))
+  (vsmap / 255 col))
 
 
 
 ;; Sphere Util
 (define (sphere pos radius color)
   (list pos radius color))
-(define (sph pos radius color)
-  (sphere pos radius color))
-(define (s pos radius color)
-  (sphere pos radius color))
 ;; Getters
 (define (s-pos sphere)
   (car sphere))
@@ -166,9 +151,6 @@
   (car (cdr ray)))
 
            
-           
-      
-
 
 ;; Scene Util
 ; Camera is aligned along the -z axis.
@@ -190,27 +172,6 @@
 (define (fov_adjust coord)
   (* coord (tan (/ (radians fov) 2))))
   
-;; (define (sensor_x coord)
-;;   (fov_adjust (aspect_adjust (- (* 2 (/ (+ 0.5 coord) scene_width)) 1))))
-;; (define (sensor_y coord)
-;;   (fov_adjust (- 1 (* 2 (/ (+ 0.5 coord) scene_height)))))
-
-;; (define (range first last)
-;;   (if (> first last)
-;;       '()
-;;       (cons first (range (+ first 1) last))))
-
-;; (define (loop i j i_max j_max fn)
-;;   (cond
-;;     ((and (< i i_max) (< j j_max))
-;;      (begin
-;;        (fn i j)
-;;        (loop i (+ j 1) i_max j_max fn)))
-;;     ((= j j_max)
-;;      (loop (+ i 1) 0 i_max j_max fn))
-;;     ((= i i_max)
-;;      '())))
-      
 ;; Drawing Util
 (define (pixel x y col)
   (setcolor (col->str col))
@@ -248,22 +209,19 @@
   (display (list x y))
   (define x (* x 100))
   (define y (* y 100))
-  ;;(define x (rotate_offset_x x y))
-  ;;(define y (rotate_offset_y x y))
+  (define x (scale_offset (rotate_offset_x x y)))
+  (define y (scale_offset (rotate_offset_y x y)))
   (rect x y (+ x 1) (+ y 1) '(1 0 0))
   (vec 0 0 0))
 
 
 (define (subdivide fn offset x y)
-  (vs/
-    (v+
-      (v+
-        (fn (+ x offset) (+ y offset))
-        (fn (- x offset) (+ y offset)))
-      (v+
-        (fn (+ x offset) (- y offset))
-        (fn (- x offset) (- y offset))))
-    4))
+  (vsmap / 0.25
+    (vmap +
+      (fn (+ x offset) (+ y offset))
+      (fn (- x offset) (+ y offset))
+      (fn (+ x offset) (- y offset))
+      (fn (- x offset) (- y offset)))))
 
 (define (exponential_subdivide factor offset x y)
   (if (= factor 2)
@@ -281,7 +239,7 @@
 (define (draw)
   ;;(speed 0)
   ;;(hideturtle)
-  ;;(super_sample 2 0 0)
+  (super_sample 4 0 0)
 
   
   (exitonclick))
