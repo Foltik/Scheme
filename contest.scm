@@ -13,6 +13,7 @@
 (define setcolor color)
 (define single-map map)
 (define single-apply apply)
+(define single-display display)
 
 ;;
 ;; General Util
@@ -44,7 +45,21 @@
 ;; (zip '(1 2) '(a b) '(y z)) -> ((1 a y) (2 b z))
 (define (zip . lsts)
   (apply map list lsts))
-      
+
+;; All permutations of (+/-n, +/-n)
+;; (sign-permutations 0.5) -> ((0.5 0.5) (-0.5 0.5) (0.5 -0.5) (-0.5 -0.5))
+(define (sign-permutations n)
+  (let ((-n (- n)))
+    (list
+      (list n n)
+      (list -n n)
+      (list n -n)
+      (list -n -n))))
+
+;; Display all arguments
+(define (display . args)
+  (map single-display args))
+  
 
 ;; Math Util
 (define (square n)
@@ -80,9 +95,6 @@
 ;; Map a function with a scalar over the vector
 (define (vsmap fn k vec)
   (map (lambda (n) (fn n k)) vec))
-
-(define (vec-map-scalar fn vec k)
-  (map (lambda (n) (fn n k)) vec))
   
 (define (vmag vec)
   (sqrt (apply + (map square vec))))
@@ -103,10 +115,6 @@
 ;; Color Util
 (define (color r g b)
   (list r g b))
-(define (col r g b)
-  (color r g b))
-(define (c r g b)
-  (color r g b))
 ;; Getters
 (define (r col)
   (x col))
@@ -206,42 +214,35 @@
   (+ (* y (cos theta)) (* x (sin theta))))
 
 (define (disp x y)
-  (display (list x y))
+  (display "Sampling " (list x y) "\n")
   (define x (* x 100))
   (define y (* y 100))
   (define x (scale_offset (rotate_offset_x x y)))
   (define y (scale_offset (rotate_offset_y x y)))
   (rect x y (+ x 1) (+ y 1) '(1 0 0))
-  (vec 0 0 0))
+  (vec x y))
 
+(define (super-sample-transform point)
+  point)
 
-(define (subdivide fn offset x y)
-  (vsmap / 0.25
-    (vmap +
-      (fn (+ x offset) (+ y offset))
-      (fn (- x offset) (+ y offset))
-      (fn (+ x offset) (- y offset))
-      (fn (- x offset) (- y offset)))))
+(define (super-sample-helper fn factor offset x y)
+  (cond
+   ((= factor 1)
+    (fn x y))
+   (else
+    (vsmap / 4
+      (apply vmap +
+        (map
+          (lambda (pair) (apply super-sample-helper fn (/ factor 4) (/ offset 2) pair))
+          (map (lambda (point) (vmap + (vec x y) point)) (sign-permutations offset))))))))
 
-(define (exponential_subdivide factor offset x y)
-  (if (= factor 2)
-      ;; disp -> sample
-      (subdivide disp offset x y)
-      (subdivide
-        (lambda (x y)
-          (exponential_subdivide (/ factor 2) (/ offset 2) x y))
-        offset x y)))
-
-(define (super_sample factor x y)
-  (exponential_subdivide factor 0.5 x y))
-
+(define (super-sample fn factor x y)
+  (super-sample-helper fn factor 0.5 x y))
 
 (define (draw)
   ;;(speed 0)
   ;;(hideturtle)
-  (super_sample 4 0 0)
-
-  
+  (super-sample disp 16 0 0)
   (exitonclick))
 
 ; Please leave this last line alone.  You may add additional procedures above
