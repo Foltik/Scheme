@@ -9,8 +9,8 @@
 (define (s.col sphere)
   (car (cdr (cdr sphere))))
 
-;; Util
-(define (s.intersect? sphere ray)
+;; Check if a ray intersects the sphere
+(define (s.intersect? ray sphere)
   (define hyp (v- (s-pos sphere) (r-pos ray)))
   (define adj (v. hyp (r-dir ray)))
   (define d (- (v. hyp hyp) (* adj adj)))

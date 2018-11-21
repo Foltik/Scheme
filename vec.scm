@@ -1,6 +1,6 @@
-;; Vector Util
 (define (vec . args)
   (apply list args))
+
 ;; Getters
 (define (x vec)
   (car vec))
@@ -18,28 +18,33 @@
   (z vec))
 (define (l vec)
   (w vec))
-;; Util
 
 ;; Map the function fn over the vectors
 (define (vmap fn . vecs)
   (apply map fn vecs))
 
-;; Map the function fn with vector vec over the vectors
-(define (vmaplst fn vec vecs)
-  (map (lambda (v) (vmap fn vec v)) vecs))
-
 ;; Map a function with a scalar over the vector
 (define (vsmap fn k vec)
   (map (lambda (n) (fn n k)) vec))
+
+;; Map the function fn with vector vec over the vectors
+(define (vmaplst fn vec vecs)
+  (map (lambda (v) (vmap fn vec v)) vecs))
   
+;; Take the average of all the vectors
 (define (vavg . vecs)
   (vsmap / (length vecs)
     (apply vmap + vecs)))
 
+;; Magnitude of a vector
 (define (vmag vec)
   (sqrt (apply + (map square vec))))
+
+;; Dot product of two vectors
 (define (vdot a b)
   (apply + (vmap * a b)))
+
+;; Cross product of two vectors
 (define (vcross a b)
   (vec
     (-

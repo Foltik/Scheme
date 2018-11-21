@@ -18,7 +18,7 @@
         (-x (- (x vec2)))
         (-y (- (y vec2))))
     (list
-      (list x y)
-      (list -x y)
-      (list x -y)
-      (list -x -y))))
+      (vec x y)
+      (vec -x y)
+      (vec x -y)
+      (vec -x -y))))
