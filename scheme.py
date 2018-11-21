@@ -738,6 +738,15 @@ def run(*argv):
     interactive = True
     load_files = []
 
+    load_files.append('util.scm')
+    load_files.append('math.scm')
+    load_files.append('vec.scm')
+    load_files.append('ray.scm')
+    load_files.append('sphere.scm')
+    load_files.append('scene.scm')
+    load_files.append('trace.scm')
+    load_files.append('draw.scm')
+
     if args.file is not None:
         if args.load:
             load_files.append(getattr(args.file, 'name'))
@@ -746,6 +755,7 @@ def run(*argv):
             def next_line():
                 return buffer_lines(lines)
             interactive = False
+
 
     read_eval_print_loop(next_line, create_global_frame(), startup=True,
                          interactive=interactive, load_files=load_files)
