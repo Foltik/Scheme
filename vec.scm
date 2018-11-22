@@ -43,6 +43,10 @@
 (define (vmag vec)
   (sqrt (apply + (map square vec))))
 
+;; Normalized vector
+(define (vnorm vec)
+  (vsmap / (vmag vec) vec))
+
 ;; Dot product of two vectors
 (define (vdot a b)
   (apply + (vmap * a b)))

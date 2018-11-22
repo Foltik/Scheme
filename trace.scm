@@ -1,24 +1,28 @@
-;; This is where the magic happens
-(define (disp vec)
-  (display "Sampling " vec "\n")
-  (define vec (vsmap * 100 vec))
-  (rect vec (vsmap + 1 vec) '(1 0 0))
-  '(0 0))
-
-(define (nearest ray)
+(define (nearest-object ray)
   (apply min
-    (map car
-      (append
-        (map (lambda (sphere) (s.dist-norm sphere ray)) scene-spheres)
-        (map (lambda (plane) (p.dist-norm plane ray)) scene-planes)))))
+    (append
+      (map (lambda (sphere) (car (s.dist-norm sphere ray))) scene-spheres))))
+      ;;(map (lambda (plane) (p.dist-norm plane ray)) scene-planes)))))
 
-(define max-iterations 200)
-(define (trace ray total-distance closest-call)
-  '()
-  )
+(define max-steps 20)
+(define (trace-helper ray steps distance)
+  (let ((nearest (nearest-object ray)))
+    (cond
+      ((or (= steps max-steps) (> (z (r.pos ray)) 40) (> nearest 100))
+       (color 0 0 0))
+      ((< nearest 0.001)
+       (color 0 1 0))
+      (else
+       (trace-helper
+         (rmarch ray nearest)
+         (+ steps 1)
+         (+ distance nearest))))))
+       
+(define (trace ray)
+  (trace-helper ray 0 0))
 
 (define (sample point)
-  '())
+  (trace (prime-ray point)))
 
 (define (make-offsets pos offset)
   (vmaplst + pos (offset-permutations offset)))

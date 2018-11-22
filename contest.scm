@@ -11,6 +11,7 @@
 
 (load "util.scm")
 (load "math.scm")
+(load "draw.scm")
 
 (load "vec.scm")
 (load "ray.scm")
@@ -22,19 +23,17 @@
 (load "camera.scm")
 (load "trace.scm")
 
-(load "draw.scm")
-
-(define (test pos)
-  (display "Sampling " pos "\n")
-  '(1 0 0))
+(define (print-sample point)
+  (display "Sampling " point "\n")
+  ;;(sample point))
+  (super-sample sample 4 point))
 
 (define (draw)
   (speed 0)
   (hideturtle)
-  (fill-canvas test 64 -3)
+  (fill-canvas print-sample 1024 -5)
   (exitonclick))
 
 ; Please leave this last line alone.  You may add additional procedures above
 ; this line.
 (draw)
-  ;;(super-sample disp 16 (vec 0 0))
