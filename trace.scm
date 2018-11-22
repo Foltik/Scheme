@@ -5,8 +5,17 @@
   (rect vec (vsmap + 1 vec) '(1 0 0))
   '(0 0))
 
+(define (nearest ray)
+  (apply min
+    (map car
+      (append
+        (map (lambda (sphere) (s.dist-norm sphere ray)) scene-spheres)
+        (map (lambda (plane) (p.dist-norm plane ray)) scene-planes)))))
+
 (define max-iterations 200)
-(define (trace ray total-distance closest-call) '())
+(define (trace ray total-distance closest-call)
+  '()
+  )
 
 (define (sample point)
   '())

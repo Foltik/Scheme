@@ -10,7 +10,11 @@
 (define (fov_adjust coord)
   (* coord (tan (/ (radians fov) 2))))
 
-(define spheres
+(define scene-spheres
   (list
-    (sphere (vec 0 0 -5) 1 (vec 0.4 1.0 0.4))))
+    (sphere (vec 0 0 -5) 1 (color 0.4 1.0 0.4))))
+
+(define scene-planes
+  (list
+    (plane (vec 0 0 0) (vec 0 1 0) (color 1 0 0))))
 
