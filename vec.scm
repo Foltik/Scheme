@@ -1,6 +1,9 @@
 (define (vec . args)
   (apply list args))
 
+(define (vecn n k)
+  (repeat n k))
+
 ;; Getters
 (define (x vec)
   (car vec))

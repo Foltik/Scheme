@@ -1,3 +1,11 @@
+;; Min
+(define (min . args)
+  (fold (lambda (a b) (if (< a b) a b)) (car args) (cdr args)))
+
+;; Max
+(define (max . args)
+  (fold (lambda (a b) (if (> a b) a b)) (car args) (cdr args)))
+
 ;; Square a number
 (define (square n)
   (* n n))

@@ -9,12 +9,17 @@
 ;;;    Use these three lines to describe
 ;;;    its inner meaning.>
 
+(define (test pos)
+  (display "Sampling " pos "\n")
+  '(1 0 0))
+
 (define (draw)
   (speed 0)
   (hideturtle)
-  (super-sample disp 64 (vec 0 0))
+  (fill-canvas test 64 -3)
   (exitonclick))
 
 ; Please leave this last line alone.  You may add additional procedures above
 ; this line.
 (draw)
+  ;;(super-sample disp 16 (vec 0 0))

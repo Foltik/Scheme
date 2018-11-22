@@ -743,6 +743,8 @@ def run(*argv):
     load_files.append('vec.scm')
     load_files.append('ray.scm')
     load_files.append('sphere.scm')
+    load_files.append('plane.scm')
+    load_files.append('material.scm')
     load_files.append('scene.scm')
     load_files.append('trace.scm')
     load_files.append('draw.scm')

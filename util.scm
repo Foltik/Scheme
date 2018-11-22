@@ -20,17 +20,36 @@
       (cons (apply fn (single-map car lst))
             (apply map fn (single-map cdr lst)))))
 
+;; Fold right
+(define (foldr fn end lst)
+  (if (null? lst)
+      end
+      (fn (car lst) (foldr fn end (cdr lst)))))
+(define reduce foldr)
+
 ;; Fold Left
-(define (foldl fn id list)
+(define (foldl fn acc list)
   (if (null? list)
-      id
-      (foldl fn (fn id (car list)) (cdr list))))
+      acc
+      (foldl fn (fn acc (car list)) (cdr list))))
+(define fold foldl)
+
 
 ;; Zip elements of lists
 ;; Also unzips lists if called again
 ;; (zip '(1 2) '(a b) '(y z)) -> ((1 a y) (2 b z))
 (define (zip . lsts)
   (apply map list lsts))
+
+
+;; List of value k repeated n times
+;; (repeat 3 0) -> (0 0 0)
+(define (repeat-helper n k lst)
+  (if (= 0 n)
+      lst
+      (repeat-helper (- n 1) k (cons k lst))))
+(define (repeat n k)
+  (repeat-helper n k '()))
 
 ;; Display all arguments in a row
 (define (display . args)
