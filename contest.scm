@@ -19,7 +19,9 @@
 (load "material.scm")
 
 (load "scene.scm")
+(load "camera.scm")
 (load "trace.scm")
+
 (load "draw.scm")
 
 (define (test pos)
