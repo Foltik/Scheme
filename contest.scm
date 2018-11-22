@@ -9,6 +9,19 @@
 ;;;    Use these three lines to describe
 ;;;    its inner meaning.>
 
+(load "util.scm")
+(load "math.scm")
+
+(load "vec.scm")
+(load "ray.scm")
+(load "sphere.scm")
+(load "plane.scm")
+(load "material.scm")
+
+(load "scene.scm")
+(load "trace.scm")
+(load "draw.scm")
+
 (define (test pos)
   (display "Sampling " pos "\n")
   '(1 0 0))

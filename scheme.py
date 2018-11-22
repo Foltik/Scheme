@@ -738,17 +738,6 @@ def run(*argv):
     interactive = True
     load_files = []
 
-    load_files.append('util.scm')
-    load_files.append('math.scm')
-    load_files.append('vec.scm')
-    load_files.append('ray.scm')
-    load_files.append('sphere.scm')
-    load_files.append('plane.scm')
-    load_files.append('material.scm')
-    load_files.append('scene.scm')
-    load_files.append('trace.scm')
-    load_files.append('draw.scm')
-
     if args.file is not None:
         if args.load:
             load_files.append(getattr(args.file, 'name'))
