@@ -1,6 +1,6 @@
 ;; Scene is a square with side length scene-size
-(define scene-size 1024)
-(define half-scene-size 512)
+(define scene-size 256)
+(define half-scene-size (/ scene-size 2))
 
 (define fov 90)
 (define (fov_adjust coord)

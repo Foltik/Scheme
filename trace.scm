@@ -53,6 +53,6 @@
        (fill fn (vec (x pos) (+ (y pos) halfsize)) halfsize sublod)
        (fill fn (vsmap + halfsize pos) halfsize sublod)))))
 
-(define (fill-canvas fn size lodoffset)
-  (fill fn (vecn 2 (- (/ size 2))) size (+ (log2 size) lodoffset)))
+(define (fill-canvas fn lodoffset)
+  (fill fn (vecn 2 (- half-scene-size)) scene-size (+ 1 (log2 scene-size) lodoffset)))
 

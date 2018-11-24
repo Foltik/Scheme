@@ -31,7 +31,7 @@
 (define (draw)
   (speed 0)
   (hideturtle)
-  (fill-canvas print-sample 1024 -5)
+  (fill-canvas print-sample -4)
   (exitonclick))
 
 ; Please leave this last line alone.  You may add additional procedures above
