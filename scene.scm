@@ -8,7 +8,7 @@
 
 (define scene-spheres
   (list
-    (sphere (vec 0 2 4) 2 (color 0 1 0))))
+    (sphere (vec 0 2 4) 2 (material (color 0.2 1 0.2) (color 0 0 0)))))
 
 (define scene-planes
   (list

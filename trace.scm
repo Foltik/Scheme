@@ -1,22 +1,28 @@
 (define (nearest-object ray)
-  (apply min
+  (apply minfn car
     (append
-      (map (lambda (sphere) (car (s.dist-norm sphere ray))) scene-spheres))))
-      ;;(map (lambda (plane) (p.dist-norm plane ray)) scene-planes)))))
-
+      (map
+        (lambda (sphere) (append (s.dist-norm sphere ray) (list (s.mat sphere))))
+        scene-spheres))))
+      ;; (map
+      ;;   (lambda (plane) (append (s.dist-norm plane ray) (p.mat plane)))
+      ;;   scene-planes))))
+      
 (define max-steps 20)
 (define (trace-helper ray steps distance)
   (let ((nearest (nearest-object ray)))
     (cond
-      ((or (= steps max-steps) (> (z (r.pos ray)) 40) (> nearest 100))
+      ((or (= steps max-steps) (> (z (r.pos ray)) 40) (> (car nearest) 100))
        (color 0 0 0))
-      ((< nearest 0.001)
-       (color 0 1 0))
+      ((< (car nearest) 0.001)
+       (define light-dir (vec 0 -1 0))
+       (define to-light light-dir)
+       (vsmap * (vdot (car (cdr nearest)) to-light) (m.diff (car (cdr (cdr nearest))))))
       (else
        (trace-helper
-         (rmarch ray nearest)
+         (rmarch ray (car nearest))
          (+ steps 1)
-         (+ distance nearest))))))
+         (+ distance (car nearest)))))))
        
 (define (trace ray)
   (trace-helper ray 0 0))

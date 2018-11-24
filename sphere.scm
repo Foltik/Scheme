@@ -1,12 +1,12 @@
-(define (sphere pos radius color)
-  (list pos radius color))
+(define (sphere pos radius material)
+  (list pos radius material))
 
 ;; Getters
 (define (s.pos sphere)
   (car sphere))
 (define (s.rad sphere)
   (car (cdr sphere)))
-(define (s.col sphere)
+(define (s.mat sphere)
   (car (cdr (cdr sphere))))
 
 (define (s.dist-norm sphere ray)

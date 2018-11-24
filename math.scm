@@ -2,9 +2,17 @@
 (define (min . args)
   (fold (lambda (a b) (if (< a b) a b)) (car args) (cdr args)))
 
+;; Min with custom function to determine comparison property
+(define (minfn fn . args)
+  (fold (lambda (a b) (if (< (fn a) (fn b)) a b)) (car args) (cdr args)))
+
 ;; Max
 (define (max . args)
   (fold (lambda (a b) (if (> a b) a b)) (car args) (cdr args)))
+
+;; Max with custom function to determine comparison property
+(define (maxfn fn . args)
+  (fold (lambda (a b) (if (> (fn a) (fn b)) a b)) (car args) (cdr args)))
 
 ;; Square a number
 (define (square n)

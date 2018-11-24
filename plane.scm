@@ -1,12 +1,12 @@
-(define (plane pos normal color)
-  (list pos normal color))
+(define (plane pos normal material)
+  (list pos normal material))
 
 ;; Getters
 (define (p.pos plane)
   (car plane))
 (define (p.norm plane)
   (car (cdr plane)))
-(define (p.col plane)
+(define (p.mat plane)
   (car (cdr (cdr plane))))
 
 
