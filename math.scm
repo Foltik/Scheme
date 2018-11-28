@@ -1,3 +1,5 @@
+(define pi 3.141592653589793)
+
 ;; Min
 (define (min . args)
   (fold (lambda (a b) (if (< a b) a b)) (car args) (cdr args)))
@@ -17,6 +19,9 @@
 ;; Square a number
 (define (square n)
   (* n n))
+
+(define (clip lower upper n)
+  (max (min n upper) lower))
 
 ;; Rotate a 2d vector around an angle theta
 (define (v2rot coord theta)

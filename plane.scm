@@ -9,14 +9,11 @@
 (define (p.mat plane)
   (car (cdr (cdr plane))))
 
-
-(define (p.dist-norm plane ray)
-  (list
-    (cond
-      ((> (x (p.norm plane) 0))
-       (- (x (r.pos ray)) (x (p.pos plane))))
-      ((> (y (p.norm plane) 0))
-       (- (y (r.pos ray)) (y (p.pos plane))))
-      ((> (z (p.norm plane) 0))
-       (- (z (r.pos ray)) (z (p.pos plane)))))
-    (p.norm plane)))
+(define (p.dist plane ray)
+  (let ((denom (vdot (vmap - (p.norm plane)) (r.dir ray))))
+    (if (> denom 0.000001)
+        (let ((dist (/ (vdot (vmap - (p.pos plane) (r.pos ray)) (vmap - (p.norm plane))) denom)))
+          (if (>= dist 0)
+              dist
+              1000000))
+        1000000)))

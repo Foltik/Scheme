@@ -17,6 +17,7 @@
 (load "ray.scm")
 (load "sphere.scm")
 (load "plane.scm")
+(load "light.scm")
 (load "material.scm")
 
 (load "scene.scm")
@@ -25,13 +26,13 @@
 
 (define (print-sample point)
   (display "Sampling " point "\n")
-  ;;(sample point))
-  (super-sample sample 4 point))
+  (sample point))
+  ;;(super-sample sample 4 point))
 
 (define (draw)
   (speed 0)
   (hideturtle)
-  (fill-canvas print-sample -4)
+  (fill-canvas print-sample -3)
   (exitonclick))
 
 ; Please leave this last line alone.  You may add additional procedures above

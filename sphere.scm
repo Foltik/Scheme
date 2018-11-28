@@ -9,8 +9,11 @@
 (define (s.mat sphere)
   (car (cdr (cdr sphere))))
 
-(define (s.dist-norm sphere ray)
-  (let ((vec-between (vmap - (r.pos ray) (s.pos sphere))))
-    (list
-      (- (vmag vec-between) (s.rad sphere))
-      (vnorm vec-between))))
+(define (s.dist sphere ray)
+  (-
+    (vmag (vmap - (r.pos ray) (s.pos sphere)))
+    (s.rad sphere)))
+
+(define (s.norm sphere ray)
+  (vnorm
+    (vmap - (r.pos ray) (s.pos sphere))))

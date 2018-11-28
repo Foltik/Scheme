@@ -29,6 +29,9 @@
 (define (colnorm col)
   (vsmap / 255 col))
 
+(define (colclip col)
+  (vmap (lambda (color) (clip 0 1 color)) col))
+
 
 ;; Drawing Util
 (define (pixel pos col)

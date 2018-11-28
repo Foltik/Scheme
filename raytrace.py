@@ -13,8 +13,11 @@ scene_width = 1024
 scene_halfwidth = scene_width / 2
 scene_pixels = scene_width ** 2
 
-camera_pos = np.array([0, 1, 0])
-camera_lookat = np.array([0, 0, 4])
+camera_pos = np.array([0, 6, -3])
+camera_lookat = np.array([0, 5, 8])
+
+
+
 camera_focal = 1
 
 camera_forward = normalize(camera_lookat - camera_pos)
@@ -137,19 +140,34 @@ class Plane:
         return ray.pos + (ray.dir * self.distance(ray))
 
 scene_lights = [
-    Light(vec(0, -1, 0.4), vec(1, 1, 1), 8),
-    PointLight(vec(0, 0, 3), vec(0.8, 0.3, 0.3), 1000)
+    Light(vec(-1, -1, 0.4), vec(1, 1, 1), 20),
+    PointLight(vec(0, 0, 3), vec(0.8, 0.6, 0.3), 10000),
+    PointLight(vec(-20, 2, 18), vec(0.8, 0.45, 0.3), 10000),
+    PointLight(vec(18, 2, 18), vec(0, 0.7, 0.7), 10000),
+    PointLight(vec(0, 5, 5), vec(0.8, 0.6, 0.3), 100),
+    PointLight(vec(-3, 5, 8), vec(0.8, 0.6, 0.3), 100),
+    PointLight(vec(3, 5, 8), vec(0.8, 0.6, 0.3), 100),
+    PointLight(vec(0, 8, 8), vec(0.8, 0.6, 0.3), 100),
+
 ]
         
 scene_spheres = [
-    Sphere(np.array([0, 0, 5]), 1, Material(np.array([0.15, 0.8, 0.15]), 0.18, 0.94, 0)),
-    Sphere(np.array([3, 1, 6]), 2, Material(np.array([1.0, 0.2, 0.2]), 0.18, 0, 0)),
-    Sphere(np.array([-2, 1, 4]), 1.5, Material(np.array([0.2, 0.2, 1.0]), 0.18, 0, 0))
+    Sphere(np.array([0, 5, 8]), 2, Material(np.array([0.99, 0.71, 0.08]), 0.18, 0.2, 0)),  # Center
+    Sphere(np.array([7.36, 8.126, 8]), .5, Material(np.array([0, 0.2, 0.38]), 0.18, 0.6, 0)),  # 1
+    Sphere(np.array([-7.36, 1.874, 8]), .5, Material(np.array([0, 0.2, 0.38]), 0.18, 0.6, 0)),  # 5
+    Sphere(np.array([5.21, 7.21, 2.32]), .5, Material(np.array([0, 0.2, 0.38]), 0.18, 0.6, 0)),  # 8
+    Sphere(np.array([-5.21, 2.8, 2.32]), .5, Material(np.array([0, 0.2, 0.38]), 0.18, 0.6, 0)),  # 6
+    Sphere(np.array([5.21, 7.21, 13.68]), .5, Material(np.array([0, 0.2, 0.38]), 0.18, 0.6, 0)),  # 2
+    Sphere(np.array([-5.21, 2.8, 13.68]), .5, Material(np.array([0, 0.2, 0.38]), 0.18, 0.6, 0)),  # 4
+    Sphere(np.array([0, 5, 0]), .5, Material(np.array([0, 0.2, 0.38]), 0.18, 0.6, 0)),  # 7
+    Sphere(np.array([0, 5, 16]), .5, Material(np.array([0, 0.2, 0.38]), 0.18, 0.6, 0)),  # 3
+    Sphere(np.array([-18, 18, 17]), 1, Material(np.array([1, 1, 1]), 0.18, 0.75, 0)),
+    Sphere(np.array([3, 3, 0]), 1, Material(np.array([1, 1, 1]), 0.18, 0.75, 0)),
 ]
 
 scene_planes = [
-    Plane(vec(0, 0, 10), vec(0, 0, -1), Material(vec(0.6, 0.9, 0.9), 0.18, 0, 0)),
-    Plane(vec(0, -2, 0), vec(0, 1, 0), Material(vec(0.13, 0.13, 0.13), 0.18, 0, 0))
+    Plane(vec(0, 0, 100), vec(0, 0, -1), Material(vec(0.13, 0.13, 0.13), 0.18, .32, 0)),
+    Plane(vec(0, -2, 0), vec(0, 1, 0), Material(vec(0.13, 0.13, 0.13), 0.18, .45, 0))
 ]
 
 def nearest_object(ray, exclude = None):
@@ -271,7 +289,7 @@ start = time.time()
 def render_row(x):
     sys.stdout.write(f'Progress: {format((x / scene_width) * 100, ".2f")}%')
     sys.stdout.write('\r')
-    return np.array([sample(x - scene_halfwidth, y - scene_halfwidth) for y in range(0, scene_width)], dtype='uint8')
+    return np.array([supersample(x - scene_halfwidth, y - scene_halfwidth) for y in range(0, scene_width)], dtype='uint8')
 
 num_cores = multiprocessing.cpu_count()
 

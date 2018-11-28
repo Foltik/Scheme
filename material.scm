@@ -1,11 +1,13 @@
-(define (material diffuse specular)
-  (list diffuse specular))
+(define (material color albedo reflectivity)
+  (list color albedo reflectivity))
 
 ;; Getters
-(define (m.diff material)
+(define (m.color material)
   (car material))
 
-(define (m.spec material)
+(define (m.albedo material)
   (car (cdr material)))
 
+(define (m.reflect material)
+  (car (cdr (cdr material))))
 

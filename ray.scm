@@ -12,3 +12,6 @@
   (ray
     (vmap + (r.pos r) (vsmap * t (r.dir r)))
     (r.dir r)))
+
+(define (r.reflect r normal)
+  (ray (r.pos r) (vmap - (r.dir r) (vsmap * (* 2 (vdot (r.dir r) normal)) normal))))
