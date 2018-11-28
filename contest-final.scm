@@ -32,6 +32,12 @@
       (cons (apply fn (single-map car lst))
             (apply map fn (single-map cdr lst)))))
 
+;; Fold Left
+(define (foldl fn acc list)
+  (if (null? list)
+      acc
+      (foldl fn (fn acc (car list)) (cdr list))))
+
 ;; List of value k repeated n times
 ;; (repeat 3 0) -> (0 0 0)
 (define (repeat-helper n k lst)
